@@ -69,7 +69,11 @@ def handle_join(data):
 def vote():
     poll_id = request.form.get('poll_id')
     option_id = request.form.get('option_id')
-    user_ip = request.remote_addr
+
+    user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if user_ip:
+        user_ip = user_ip.split(',')[0].strip()
+
 
     existing_vote = Vote.query.filter_by(poll_id=poll_id, ip_address=user_ip).first()
     if existing_vote:
