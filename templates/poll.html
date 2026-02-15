@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Poll</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>{{ poll.question }}</h1>
+
+    <form action="/vote" method="POST">
+        <input type="hidden" name="poll_id" value="{{ poll.id }}">
+
+        <div id="options">
+        {% for option in options %}
+            <label>
+                <input type="radio" name="option_id" value="{{ option.id }}" required>
+                {{ option.text }} (Votes: <span id="vote-{{ option.text }}">{{ option.votes }}</span>)
+            </label>
+            <br><br>
+        {% endfor %}
+        </div>
+
+        <button type="submit">Vote</button>
+    </form>
+
+    <hr>
+
+    <h3>Share this link:</h3>
+    <input type="text" value="{{ request.url }}" readonly style="width: 400px;">
+
+    <script>
+        const socket = io();
+        const pollId = "{{ poll.id }}";
+        const voteButton = document.querySelector("button");
+        const form = document.querySelector("form");
+    
+        // Anti-Abuse Mechanism 2: Browser LocalStorage Lock
+        const votedKey = "voted_" + pollId;
+    
+        if (localStorage.getItem(votedKey)) {
+            voteButton.disabled = true;
+            voteButton.innerText = "Already Voted";
+        }
+    
+        // Join room for real-time updates
+        socket.emit('join_poll', { poll_id: pollId });
+    
+        // Listen for live vote updates
+        socket.on('update_results', function(data) {
+            for (const [option, votes] of Object.entries(data)) {
+                const span = document.getElementById("vote-" + option);
+                if (span) {
+                    span.textContent = votes;
+                }
+            }
+        });
+    
+        // Lock voting after submit (prevents refresh abuse)
+        form.addEventListener("submit", function() {
+            localStorage.setItem(votedKey, "true");
+        });
+    </script>
+    
+</body>
+</html>
