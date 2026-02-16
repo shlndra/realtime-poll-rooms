@@ -84,7 +84,7 @@ http://127.0.0.1:5000
 ## Real-Time System Explanation
 The application uses Flask-SocketIO to create poll-specific rooms. When a user votes, the server updates the database and broadcasts the updated results to all connected clients in real time without requiring a page refresh.
 
-## Assignment Requirement Coverage
+## Coverage
 - Poll Creation: Implemented
 - Shareable Links: Implemented
 - Real-Time Updates: Implemented
