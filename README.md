@@ -18,7 +18,7 @@ Users can create a poll, share the generated link, and multiple users can vote s
 - Persistent data storage using SQLite
 - Duplicate vote prevention system
 - Cloud deployment on Render
-
+- Open Source contribution 
 ## Fairness / Anti-Abuse Mechanisms
 1. IP-Based Vote Restriction (Server-Side)
 The application tracks the client IP address and prevents multiple votes from the same IP for a single poll to reduce spam and repeated voting.
